@@ -21,7 +21,6 @@ jobs:
 
       - name: Run Jest tests
         run: npm test
-        continue-on-error: false
 
   update_pr_status:
     needs: run_jest_tests
