@@ -31,7 +31,7 @@ jobs:
         id: update_pr_status
         run: |
           echo "::set-output name=pr_status::success"
-          if [[ ${{ needs.run_jest_tests.outcome }} == 'failure' ]]; then
+          if [ "${{ needs.run_jest_tests.outcome }}" == 'failure' ]; then
             echo "::set-output name=pr_status::failure"
           fi
 
