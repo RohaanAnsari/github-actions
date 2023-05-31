@@ -36,7 +36,7 @@ jobs:
           fi
 
   disable_merge_button:
-    needs: [update_pr_status, finishing_up]
+    needs: [update_pr_status]
     runs-on: ubuntu-latest
     if: ${{ needs.update_pr_status.outputs.pr_status == 'failure' || needs.run_jest_tests.result != 'success' }}
     steps:
