@@ -1,9 +1,9 @@
 name: test workflow
 
 on:
-  #   push:
-  #     branches:
-  #       - main
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -17,16 +17,20 @@ jobs:
       - name: First test
         run: echo "running first test..."
         shell: bash
+        id: first_test
+        continue-on-error: true
 
   finishing_up:
     runs-on: ubuntu-latest
+    needs: starting_up
     steps:
       - name: Final test
         run: echo "final test..."
         shell: bash
+        id: final_test
 
   run_jest_tests:
-    needs: [starting_up]
+    needs: [starting_up, finishing_up]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,3 +41,26 @@ jobs:
 
       - name: Run Jest tests
         run: npm test
+        continue-on-error: true
+
+  update_pr_status:
+    needs: run_jest_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update PR Status
+        id: update_pr_status
+        run: |
+          echo "::set-output name=pr_status::success"
+          if [[ ${{ needs.run_jest_tests.outcome }} == 'failure' ]]; then
+            echo "::set-output name=pr_status::failure"
+          fi
+
+  disable_merge_button:
+    needs: [update_pr_status, finishing_up]
+    runs-on: ubuntu-latest
+    if: ${{ needs.update_pr_status.outputs.pr_status == 'failure' }}
+    steps:
+      - name: Disable Merge Button
+        run: |
+          echo "Disabling merge button"
+          # Add any appropriate steps or commands here to disable the merge button
