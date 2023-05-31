@@ -23,22 +23,21 @@ jobs:
         run: npm test
         continue-on-error: false
 
-  #   update_pr_status:
-  #     needs: run_jest_tests
-  #     runs-on: ubuntu-latest
-  #     steps:
-  #       - name: Update PR Status
-  #         id: update_pr_status
-  #         run: |
-  #           echo "::set-output name=pr_status::success"
-  #           if [[ ${{ needs.run_jest_tests.outcome }} == 'failure' ]]; then
-  #             echo "::set-output name=pr_status::failure"
-  #           fi
+  update_pr_status:
+    needs: run_jest_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update PR Status
+        id: update_pr_status
+        run: |
+          echo "::set-output name=pr_status::success"
+            if [[ ${{ needs.run_jest_tests.outcome }} == 'failure' ]]; then
+            echo "::set-output name=pr_status::failure"
+          fi
 
   disable_merge_button:
-    needs: [update_pr_status, finishing_up]
     runs-on: ubuntu-latest
-    if: ${{ needs.update_pr_status.outputs.pr_status == 'failure' || needs.run_jest_tests.result != 'success' }}
+    if: ${{ needs.run_jest_tests.result != 'success' || needs.update_pr_status.outputs.pr_status == 'failure' }}
     steps:
       - name: Disable Merge Button
         run: |
