@@ -1,27 +1,26 @@
 name: test workflow
 
 on:
-   push:
-      branches:
-         - main
-   pull_request:
-      branches:
-         - main
-   workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-   starting_up:
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v2
-         - name: first test
-            run: echo "running first test..."
-            shell: bash
+  starting_up:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: First test
+        run: echo "running first test..."
+        shell: bash
 
-   finishing_up:
-      runs-on: ubuntu-latest
-      steps: 
-         - name: final test
-            run: echo "final test..."
-            shell: bash
-         
+  finishing_up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Final test
+        run: echo "final test..."
+        shell: bash
