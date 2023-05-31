@@ -58,7 +58,7 @@ jobs:
   disable_merge_button:
     needs: [update_pr_status, finishing_up]
     runs-on: ubuntu-latest
-    if: ${{ needs.update_pr_status.outputs.pr_status == 'failure' }}
+    if: ${{ needs.update_pr_status.outputs.pr_status == 'failure' || needs.run_jest_tests.result != 'success' }}
     steps:
       - name: Disable Merge Button
         run: |
