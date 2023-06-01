@@ -10,36 +10,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  run_jest_tests:
+  init:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+  run_jest_tests:
+    runs-on: ubuntu-latest
+    steps:
       - name: Install dependencies
         run: npm ci
 
       - name: Run Jest tests
         run: npm test
-
-  update_pr_status:
-    needs: run_jest_tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update PR Status
-        id: update_pr_status
-        run: |
-          echo "::set-output name=pr_status::success"
-          if [ "${{ needs.run_jest_tests.outcome }}" == 'failure' ]; then
-            echo "::set-output name=pr_status::failure"
-          fi
-
-  disable_merge_button:
-    needs: [update_pr_status]
-    runs-on: ubuntu-latest
-    if: ${{ needs.update_pr_status.outputs.pr_status == 'failure' || needs.run_jest_tests.result != 'success' }}
-    steps:
-      - name: Disable Merge Button
-        run: |
-          echo "Disabling merge button"
-          # Add any appropriate steps or commands here to disable the merge button
